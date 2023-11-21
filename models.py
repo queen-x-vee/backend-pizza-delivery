@@ -19,7 +19,7 @@ class User(Base):
 
 
 
-class Choice(Base):
+class Order(Base):
 
     ORDER_STATUSES = (
         ("PENDING", "pending"),
