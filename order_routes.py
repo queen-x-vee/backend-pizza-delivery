@@ -63,3 +63,21 @@ async def create_order(order: OrderModel, Authorize:AuthJWT = Depends()):
 
 
    
+
+@order_router.get("/orders")
+async def get_all_orders(Authorize:AuthJWT = Depends()):
+    try:
+        Authorize.jwt_required()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
+    
+    current_user=Authorize.get_jwt_subject()
+
+    user= session.query(User).filter(User.username==current_user).first()
+
+    if user.is_staff:
+        orders= session.query(Order).all()
+
+        return jsonable_encoder(orders)
+    
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to view this")
